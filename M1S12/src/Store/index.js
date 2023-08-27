@@ -1,31 +1,51 @@
-import {createStore} from 'vuex'
+import { createStore } from 'vuex'
 
 const store = createStore({
     state() {
-        return{
-            teste:'olá mundo',
-            produtosCarrinho:[]
+        return {
+            teste: 'Ola mundo',
+            produtosCarrinho: []
         }
     },
-    mutations:{
-            alterarTeste(state, value){
-                state.teste = value
+    mutations: {
+        alterarTeste(state, value) {
+            state.teste = value
+        },
+        adicionarProdutoAoCarrinho(state, produtoRecebido) {
 
+            const produtoNoCarrinho = state.produtosCarrinho.find(produto => produto.id === produtoRecebido.id)
 
+            if (produtoNoCarrinho) {
+
+                state.produtosCarrinho = state.produtosCarrinho.map(item => {
+                    if (item.id === produtoRecebido.id) {
+                        item.quantidade = item.quantidade + 1
+                    }
+                    return item
+                })
+
+            } else {
+                state.produtosCarrinho = [
+                    ...state.produtosCarrinho,
+                    {
+                        ...produtoRecebido,
+                        quantidade: 1
+                    }
+                ]
             }
 
+
+
+        }
     },
-
-    actions:{
-        alterarNome(context , value){
-            console.log (value.nome)
+    actions: {
+        alterarNome(context, value) {
+            console.log(value.nome)
             console.log("entrei no alterar nome")
-            context.commit("Alterar teste", value.nome)
+            context.commit("alterarTeste", value.nome)
         },
-
-        adicionarProduto(){
-
-            console.log('Entrei no adicionar Produto')
+        adicionarProduto(context, value) {
+            context.commit("adicionarProdutoAoCarrinho", value.product)
         }
     }
 })
